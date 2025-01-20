@@ -1,0 +1,27 @@
+const express = require('express');
+const { MeiliSearch } = require('meilisearch');
+
+const app = express();
+const client = new MeiliSearch({
+  host: 'http://172.233.131.83:7700',
+  apiKey: '6d9bb59dca80659707c17d1363e5393fd13475362644c14faf0652ee886'
+});
+
+// Función asíncrona para realizar la búsqueda
+async function performSearch() {
+  try {
+    const index = client.index('movies'); // Asegúrate de que 'movies' es el nombre correcto de tu índice
+    const search = await index.search('philoudelphia'); // Término de búsqueda
+    console.log('Resultados de búsqueda:', search);
+  } catch (error) {
+    console.error('Error al realizar la búsqueda:', error);
+  }
+}
+
+// Llama a la función performSearch
+performSearch();
+
+// Inicia el servidor
+app.listen(3100, () => {
+  console.log('Servidor escuchando en el puerto 3000');
+});
