@@ -37,7 +37,14 @@
         document.getElementById('results').innerText = 'Error al realizar la búsqueda.';
       }
     }
-
+    function verResultados(results){
+        const resultDiv = document.getElementById('results');
+        resultDiv.innerHTML = '';
+        if (results.length === 0){
+            resultDiv.innerHTML = '<p>No se encontraron resultados.</p>';
+            return;
+        }
+    }
   </script>
 </body>
 </html>
