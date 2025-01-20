@@ -44,7 +44,19 @@
             resultDiv.innerHTML = '<p>No se encontraron resultados.</p>';
             return;
         }
-        results
+        
+      results.forEach(result => {
+        const resultItem = document.createElement('div');
+        resultItem.innerHTML = `
+          <p><strong>Título:</strong> ${result.title || 'Sin título'}</p>
+          <p><strong>Descripción:</strong> ${result.overview || 'Sin descripción'}</p>
+          <p><strong>Poster:</strong> 
+          ${result.poster ? `<img src="${result.poster}" alt="Poster de ${result.title}" style="max-width: 200px; border-radius: 5px;">` : 'Sin imagen'}
+        </p>
+
+        `;
+        resultsDiv.appendChild(resultItem);
+      });
     }
   </script>
 </body>
