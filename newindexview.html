@@ -1,0 +1,184 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <p hidden>Realizado por German Yair</p>
+  <title>GYMB</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f4f8;
+      margin: 0;
+      padding: 0;
+      color: #333;
+    }
+
+    h1 {
+      text-align: center;
+      margin: 20px 0;
+      color: #444;
+    }
+
+    #searchQuery {
+      display: block;
+      width: 80%;
+      max-width: 400px;
+      margin: 0 auto 10px;
+      padding: 10px;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+      font-size: 16px;
+    }
+
+    button {
+      display: block;
+      width: 150px;
+      margin: 10px auto;
+      padding: 10px;
+      font-size: 16px;
+      background-color: #007BFF;
+      color: #fff;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #0056b3;
+    }
+
+    #results {
+      width: 80%;
+      max-width: 600px;
+      margin: 20px auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 10px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    #results div {
+      display: flex;
+      align-items: flex-start;
+      gap: 15px;
+      border-bottom: 1px solid #ddd;
+      padding: 15px 0;
+    }
+
+    #results div:last-child {
+      border-bottom: none;
+    }
+
+    .result-image {
+      flex-shrink: 0;
+      width: 100px;
+      height: 150px;
+      overflow: hidden;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    }
+
+    .result-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .result-info {
+      flex-grow: 1;
+    }
+
+    .result-info p {
+      margin: 5px 0;
+    }
+
+    .result-info p strong {
+      color: #555;
+    }
+
+    @media (max-width: 600px) {
+      #searchQuery {
+        width: 90%;
+      }
+
+      #results {
+        width: 90%;
+      }
+
+      button {
+        width: 70%;
+      }
+
+      #results div {
+        flex-direction: column;
+        align-items: center;
+      }
+
+      .result-image {
+        width: 150px;
+        height: 200px;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>Búsqueda de Películas</h1>
+  <input type="text" id="searchQuery" placeholder="Escribe tu búsqueda">
+  <button onclick="performSearch()">Buscar</button>
+  <div id="results"></div>
+
+  <script>
+    async function performSearch() {
+      const query = document.getElementById('searchQuery').value;
+      if (!query) {
+        alert('Por favor, ingresa un término de búsqueda.');
+        return;
+      }
+
+      try {
+        const response = await fetch('http://localhost:3000/search', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query }),
+        });
+
+        if (!response.ok) {
+          throw new Error('Error al realizar la búsqueda');
+        }
+
+        const data = await response.json();
+        displayResults(data.hits);
+      } catch (error) {
+        console.error('Error:', error);
+        document.getElementById('results').innerText = 'Error al realizar la búsqueda.';
+      }
+    }
+
+    function displayResults(results) {
+      const resultsDiv = document.getElementById('results');
+      resultsDiv.innerHTML = ''; 
+      if (results.length === 0) {
+        resultsDiv.innerHTML = '<p>No se encontraron resultados.</p>';
+        return;
+      }
+
+      results.forEach(result => {
+        const resultItem = document.createElement('div');
+        resultItem.innerHTML = `
+          <div class="result-image">
+            ${result.poster ? <img src="${result.poster}" alt="Poster de ${result.title}"> : '<p>Sin imagen</p>'}
+          </div>
+          <div class="result-info">
+            <p><strong>Título:</strong> ${result.title || 'Sin título'}</p>
+            <p><strong>Descripción:</strong> ${result.overview || 'Sin descripción'}</p>
+          </div>
+        `;
+        resultsDiv.appendChild(resultItem);
+      });
+    }
+  </script>
+</body>
+</html>
+nuevo
